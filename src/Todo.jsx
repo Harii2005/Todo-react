@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { v4 as uuidv4 } from 'uuid';//this will generate a unique key for every task 
+import { v4 as uuidv4 } from 'uuid'; //this will generate a unique key for every task 
+import './Todo.css'; // Import the new CSS file
 
 export default function Todo(){
 
@@ -62,34 +63,53 @@ export default function Todo(){
     }
 
     return(
-        <div>
-            <div>Todo app</div>
-            <input 
-                placeholder="add a task"
-                value={newTodo}
-                onChange={updateTodoValue}
-            ></input>
-            <button onClick={addNewTask}>add</button>
-            <h4>tasks to do</h4>
-            <ul>
+        <div className="todo-container">
+            <h2 className="todo-title">Todo App</h2>
+            <div className="todo-input-container">
+                <input 
+                    className="todo-input"
+                    placeholder="Add a task"
+                    value={newTodo}
+                    onChange={updateTodoValue}
+                />
+                <button className="add-button" onClick={addNewTask}>Add</button>
+            </div>
+            <h4>Tasks to do</h4>
+            <ul className="todo-list">
                 {todos.map((todo)=>(
-                    <li key={todo.id}>
-                        <span style={todo.isDone ? { textDecorationLine: "line-through" } : {}}>
+                    <li key={todo.id} className="todo-item">
+                        <span 
+                            className={`todo-task ${todo.isDone ? "task-done" : ""}`}
+                        >
                             {todo.task}
                         </span>
-                        &nbsp; &nbsp; &nbsp; &nbsp;
-                        {/* here the problem is that if we pass it just like the "deleteTodo(todo.id)" it will execute the function not print the value when button is pressed so arrow function is used.. */}
-                        <button onClick={()=>deleteTodo(todo.id)}>delete</button> 
-                        <button onClick={()=>upperCaseOne(todo.id)}>to upperCase</button> 
-                        <button className="isDone" onClick={()=>isTaskDone(todo.id)}>mark as done</button>
+                        <div className="todo-actions">
+                            <button 
+                                className="todo-button delete-button" 
+                                onClick={()=>deleteTodo(todo.id)}
+                            >
+                                Delete
+                            </button> 
+                            <button 
+                                className="todo-button uppercase-button" 
+                                onClick={()=>upperCaseOne(todo.id)}
+                            >
+                                Uppercase
+                            </button> 
+                            <button 
+                                className="todo-button done-button" 
+                                onClick={()=>isTaskDone(todo.id)}
+                            >
+                                Done
+                            </button>
+                        </div>
                     </li>
                 ))}
             </ul> 
-            <br></br><br></br>
-            <button onClick={upperCaseAll} >ToUpperCase</button>
-            <button onClick={allTaskDone} >Mark all as done </button>
-
-
+            <div className="global-actions">
+                <button className="global-button" onClick={upperCaseAll}>Uppercase All</button>
+                <button className="global-button" onClick={allTaskDone}>Mark All Done</button>
+            </div>
         </div>
     );
 }
