@@ -3,12 +3,12 @@ import { v4 as uuidv4 } from 'uuid';//this will generate a unique key for every 
 
 export default function Todo(){
 
-    let[todos , setTodos] = useState([{task : "sample task" , id : uuidv4()}]);
+    let[todos , setTodos] = useState([{task : "sample task" , id : uuidv4() , isDone: false }]);
     let[newTodo , setNewTodo] = useState("");
 
     let addNewTask = (()=>{ //use call backs if NEWvalue depends of OLDvalue
         setTodos((prevTodos)=>(
-            [...todos, { task: newTodo, id: uuidv4() }]
+            [...prevTodos, { task: newTodo, id: uuidv4()  , isDone : false}]
         )); 
         setNewTodo("");
     })
@@ -29,6 +29,38 @@ export default function Todo(){
         ));
     }
 
+    let upperCaseOne = (id) =>{
+        setTodos((prevTodos) => 
+            (prevTodos.map((todo)=>{
+                if(todo.id == id){
+                    return { ...todo , task : todo.task.toUpperCase() }
+                }else{
+                    return todo;
+                }
+            })
+        ));
+    }
+
+    let isTaskDone = (id) =>{
+        setTodos((prevTodos) =>
+            prevTodos.map((todo) =>{
+                if(todo.id == id){
+                    return{...todo , isDone : true};
+                }else{
+                    return todo;
+                }
+            })
+        );       
+    }
+
+    let allTaskDone = () =>{
+        setTodos((prevTodos)=>(
+            prevTodos.map((todo)=>{
+                return {...todo , isDone : true};
+            })
+        ));
+    }
+
     return(
         <div>
             <div>Todo app</div>
@@ -37,20 +69,26 @@ export default function Todo(){
                 value={newTodo}
                 onChange={updateTodoValue}
             ></input>
-            <button onClick={addNewTask}>add</button><br></br>
+            <button onClick={addNewTask}>add</button>
             <h4>tasks to do</h4>
             <ul>
                 {todos.map((todo)=>(
                     <li key={todo.id}>
-                        <span> {todo.task} </span>
+                        <span style={todo.isDone ? { textDecorationLine: "line-through" } : {}}>
+                            {todo.task}
+                        </span>
                         &nbsp; &nbsp; &nbsp; &nbsp;
                         {/* here the problem is that if we pass it just like the "deleteTodo(todo.id)" it will execute the function not print the value when button is pressed so arrow function is used.. */}
                         <button onClick={()=>deleteTodo(todo.id)}>delete</button> 
+                        <button onClick={()=>upperCaseOne(todo.id)}>to upperCase</button> 
+                        <button className="isDone" onClick={()=>isTaskDone(todo.id)}>mark as done</button>
                     </li>
                 ))}
             </ul> 
             <br></br><br></br>
             <button onClick={upperCaseAll} >ToUpperCase</button>
+            <button onClick={allTaskDone} >Mark all as done </button>
+
 
         </div>
     );
